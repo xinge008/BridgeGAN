@@ -1,0 +1,53 @@
+#
+#    CC BY-NC-ND 4.0 license
+train:
+  snapshot_save_iterations: 100  # How often do you want to save trained models
+  image_save_iterations: 500     # How often do you want to save output images during training
+  display: 10                    # How often do you want to log the training stats
+  snapshot_prefix: ../outputs/unit/da_frontbird/da_frontbird # Where do you want to save the outputs
+  hyperparameters:
+    trainer: COCOGANDAContextTrainer # CoVAE-GAN for domain adaptation
+    gen: CoVAE32x32
+    dis: CoDis32x32
+    gen_ch: 64         # base channel number per layer
+    dis_ch: 64         # base channel number per layer
+    kl_normalized_direct_w: 0.0001  # weight on the KL divergence loss
+    ll_normalized_direct_w: 0.001    # weight on the reconstruction loss
+    feature_w: 0.0001  # weight on discriminator feature matching
+    cls_w: 10.0        # weight on classification accuracy
+    gan_w: 1.0         # weight on the adversarial loss
+    batch_size: 16     # image batch size per domain
+    test_batch_size: 1
+    max_iterations: 200000 # maximum number of training epochs
+    input_dim_a: 3
+    input_dim_b: 3
+  datasets:
+    train_a: # Domain 1 dataset
+      channels: 3       # image channel number
+      scale: 1.2
+      crop_image_height: 320 # crop image size
+      crop_image_width: 320  # crop image size
+      class_name: dataset_imagenet_image    # dataset class name
+      root: /mnt/lustre/zhuxinge/dataset/unit/domain_adaptation
+      folder: GTAV_1
+      list_name: day_gt_list.txt  # image list
+    train_b: # Domain 2 dataset
+      channels: 3       # image channel number
+      scale: 1.2
+      crop_image_height: 320 # crop image size
+      crop_image_width: 320  # crop image size
+      class_name: dataset_imagenet_image    # dataset class name
+      root: /mnt/lustre/zhuxinge/dataset/unit/domain_adaptation
+      folder: GTAV_2
+      list_name: day_homo_list.txt  # image list
+      use_inversion: 1
+    test_b: # Domain 1 dataset
+      channels: 3       # image channel number
+      scale: 1.2
+      crop_image_height: 320 # crop image size
+      crop_image_width: 320  # crop image size
+      class_name: dataset_imagenet_image    # dataset class name
+      root: /mnt/lustre/zhuxinge/dataset/unit/domain_adaptation
+      folder: GTAV_1
+      list_name: day_gt_list.txt  # image list
+      use_inversion: 0
